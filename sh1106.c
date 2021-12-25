@@ -6,29 +6,6 @@
 *  \author     EmbeTronicX
 *
 *  \Tested with Linux raspberrypi 5.4.51-v7l+
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
-*  \\ DCM duc quang
 * *******************************************************************************/
 #include <linux/module.h>
 #include <linux/init.h>
