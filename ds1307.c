@@ -1,10 +1,3 @@
-/*
- * ds1307.c
- *
- *  Created on: Aug 18, 2021
- *      Author: Quang Anh
- */
-
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/slab.h>

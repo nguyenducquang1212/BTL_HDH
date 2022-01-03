@@ -1,10 +1,3 @@
-/*
- * ds1307.h
- *
- *  Created on: Aug 18, 2021
- *      Author: Quang Anh
- */
-
 #ifndef DS1307_H_
 #define DS1307_H_
 
