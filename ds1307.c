@@ -1,3 +1,10 @@
+/*
+ * ds1307.c
+ *
+ *  Created on: Aug 18, 2021
+ *      Author: Quang Anh
+ */
+
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/slab.h>
@@ -5,12 +12,13 @@
 #include <linux/delay.h>
 #include <linux/kernel.h>
 #include <linux/time.h>
-#include <linux/ktime.h>
-#include <linux/time64.h>
 #include <linux/string.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
 #include <linux/module.h>
+#include <linux/time64.h>
+#include <linux/time.h>
+#include <linux/ktime.h>
 #include <linux/kdev_t.h>
 #include <linux/fs.h>
 #include <linux/cdev.h>
@@ -21,11 +29,8 @@
 #include <linux/sched.h>   //task_struct
 #include <linux/delay.h>
 
-#include <linux/proc_fs.h>
-#include <linux/slab.h>
 
 #include "ds1307.h"
-#define _POSIX_C_SOURCE 199309L
 
 #define I2C_BUS_AVAILABLE (1)         // I2C Bus available in our Raspberry Pi
 #define SLAVE_DEVICE_NAME ("ETX_RTC") // Device and Driver Name
@@ -34,32 +39,34 @@
 static struct i2c_adapter *etx_i2c_adapter = NULL;   // I2C Adapter Structure
 static struct i2c_client *etx_i2c_client_rtc = NULL; // I2C Client Structure (In our case it is RTC)
 
+struct timespec64 t;
+struct tm br;
+
+
 static struct task_struct *etx_thread;
 
 #define toDEC(c) ((c >> 4) * 10 + (c & 0x0F))
 #define toBCD(c) ((c / 10) << 4 | (c % 10))
 
 DS1307_t ds;
-
-struct timespec64 t;
-struct tm br;
-
+EXPORT_SYMBOL(ds);
 static void DS1307_getTime(DS1307_t *ds1307);
 
 int thread_function(void *pv)
 {
+    int i = 0;
 
     while (!kthread_should_stop())
     {
-        // pr_info("In EmbeTronicX Thread Function %d\n", i++);
-        // DS1307_getTime(&ds);
+        DS1307_getTime(&ds);
 
-        // printk("%d - %d - %d - %d day", ds.date, ds.month, ds.year, ds.day);
-        // printk("%d:%d:%d", ds.hour, ds.min, ds.sec);
-        // msleep(1000);
+        printk("%d - %d - %d - %d day", ds.date, ds.month, ds.year, ds.day);
+        printk("%d:%d:%d", ds.hour, ds.min, ds.sec);
+        msleep(1000);
     }
     return 0;
 }
+
 
 static void DS1307_setTime(DS1307_t *ds1307, uint8_t sec, uint8_t min, uint8_t hour, uint8_t date, uint8_t month, uint8_t year)
 {
@@ -94,6 +101,7 @@ static void DS1307_getTime(DS1307_t *ds1307)
     ds1307->year = toDEC(ds1307->buffer[6]);
 }
 
+
 void RTC_Init(void)
 {
     uint8_t data_reg[2] = {0, 0};
@@ -124,26 +132,37 @@ void RTC_Init(void)
 static int etx_rtc_probe(struct i2c_client *client,
                          const struct i2c_device_id *id)
 {
+    RTC_Init();
 
+    // struct tm *tm;
+
+    // tm = gmtime(&st.st_mtim.tv_sec);
+
+    // DS1307_setTime(&ds, tm->tm_sec, tm->tm_min, tm->tm_hour, tm->tm_mday, tm->tm_mon, tm->tm_year - 100);
+   
     ktime_get_real_ts64(&t);
 
     time64_to_tm(t.tv_sec, 0, &br);
+   
+    DS1307_setTime(&ds, br.tm_sec, br.tm_min, br.tm_hour+7, br.tm_mday, br.tm_mon, br.tm_year);
 
-    printk("%d:%d:%dn", br.tm_hour, br.tm_min, br.tm_sec);
-    printk("%d:%d:%ld\n", br.tm_mday, br.tm_mon, br.tm_year);
-
-    msleep(2000);
-
-    ktime_get_real_ts64(&t);
-
-    time64_to_tm(t.tv_sec, 0, &br);
-
-    printk("%d:%d:%dn", br.tm_hour, br.tm_min, br.tm_sec);
-    printk("%d:%d:%ld\n", br.tm_mday, br.tm_mon, br.tm_year);
     printk("OLED Probed!!!\n");
+
+    DS1307_getTime(&ds);
+
+    printk("%d - %d - %d - %d day", ds.date, ds.month, ds.year, ds.day);
+    printk("%d:%d:%d", ds.hour, ds.min, ds.sec);
+
+    msleep(3000);
+
+    DS1307_getTime(&ds);
+    printk("%d - %d - %d - %d day", ds.date, ds.month, ds.year, ds.day);
+    printk("%d:%d:%d", ds.hour, ds.min, ds.sec);
 
     return 0;
 }
+
+
 
 /*
 ** This function getting called when the slave has been removed
@@ -205,16 +224,25 @@ static int __init etx_driver_init(void)
 
     printk("Driver Added!!!\n");
 
-    // etx_thread = kthread_create(thread_function, NULL, "eTx Thread");
-    // if (etx_thread)
-    // {
-    //     wake_up_process(etx_thread);
-    // }
-    // else
-    // {
-    //     pr_err("Cannot create kthread\n");
-    // }
+    etx_thread = kthread_create(thread_function, NULL, "eTx Thread");
+    if (etx_thread)
+    {
+        wake_up_process(etx_thread);
+    }
+    else
+    {
+        pr_err("Cannot create kthread\n");
+    }
 
+    // while (1)
+    // {
+    //     DS1307_getTime(&ds);
+
+    //     printk("%d - %d - %d - %d day", ds.date, ds.month, ds.year, ds.day);
+    //     printk("%d:%d:%d", ds.hour, ds.min, ds.sec);
+
+    //     msleep(1000);
+    // }
     return ret;
 }
 
