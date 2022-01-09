@@ -1,0 +1,4 @@
+EXTRA_CFLAGS = -Wall
+
+obj-m += ds1307.o
+obj-m += ssh1106.o
