@@ -448,5 +448,5 @@ module_exit(etx_driver_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("NHOM 5");
-MODULE_DESCRIPTION("Simple I2C driver explanation (SSD_1306 OLED Display Interface)");
+MODULE_DESCRIPTION("Simple I2C driver explanation (SSH1106 OLED Display Interface)");
 MODULE_VERSION("1.34");
