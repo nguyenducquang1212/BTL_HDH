@@ -1,5 +1,5 @@
 KDIR = /lib/modules/`uname -r`/build
-
+#KDIR=KDIR=/usr/src/kernel/ # FPGA
 all:
 	make -C $(KDIR) M=`pwd`
  
