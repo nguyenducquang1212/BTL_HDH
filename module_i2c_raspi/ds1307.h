@@ -1,8 +1,8 @@
 /*
  * ds1307.h
  *
- *  Created on: Aug 18, 2021
- *      Author: Quang Anh
+ *  Created on: Dec 2021
+ *      Author: Nhom 5
  */
 
 #ifndef DS1307_H_
