@@ -13,7 +13,7 @@
 
 #define I2C_BUS_AVAILABLE (1)          // I2C Bus available in our Raspberry Pi
 #define SLAVE_DEVICE_NAME ("ETX_OLED") // Device and Driver Name
-#define SSD1306_SLAVE_ADDR (0x3C)      // SSD1306 OLED Slave Address
+#define SSH1106_SLAVE_ADDR (0x3C)      // SSH1106 OLED Slave Address
 
  struct task_struct *etx_thread;
 
@@ -78,7 +78,7 @@ int thread_function(void *pv)
 
 
 
-void SSD1306_Write(bool is_cmd, unsigned char data)
+void SSH1106_Write(bool is_cmd, unsigned char data)
 {
     unsigned char buf[2] = {0};
     int ret;
@@ -132,36 +132,36 @@ void WriteData(uint8_t *_buffer, size_t buff_size)
 **      none
 ** 
 */
- int SSD1306_DisplayInit(void)
+ int SSH1106_DisplayInit(void)
 {
     msleep(100); // delay
 
-    SSD1306_Write(true, 0xAE); // Entire Display OFF
-    SSD1306_Write(true, 0xD5); // Set Display Clock Divide Ratio and Oscillator Frequency
-    SSD1306_Write(true, 0xF0); // Default Setting for Display Clock Divide Ratio and Oscillator Frequency that is recommended
-    SSD1306_Write(true, 0xA8); // Set Multiplex Ratio
-    SSD1306_Write(true, 0x3F); // 64 COM lines
-    SSD1306_Write(true, 0xD3); // Set display offset
-    SSD1306_Write(true, 0x3F); // 0 offset
-    SSD1306_Write(true, 0x40); // Set first line as the start line of the display
-    SSD1306_Write(true, 0x8D); // Charge pump
-    SSD1306_Write(true, 0x14); // Enable charge dump during display on
-    SSD1306_Write(true, 0x20); // Set memory addressing mode
-    SSD1306_Write(true, 0x00); // Horizontal addressing mode
-    SSD1306_Write(true, 0xA1); // Set segment remap with column address 127 mapped to segment 0
-    SSD1306_Write(true, 0xC8); // Set com output scan direction, scan from com63 to com 0
-    SSD1306_Write(true, 0xDA); // Set com pins hardware configuration
-    SSD1306_Write(true, 0x12); // Alternative com pin configuration, disable com left/right remap
-    SSD1306_Write(true, 0x81); // Set contrast control
-    SSD1306_Write(true, 0xAF); // Set Contrast to 128
-    SSD1306_Write(true, 0xD9); // Set pre-charge period
-    SSD1306_Write(true, 0xF1); // Phase 1 period of 15 DCLK, Phase 2 period of 1 DCLK
-    SSD1306_Write(true, 0xDB); // Set Vcomh deselect level
-    SSD1306_Write(true, 0x40); // Vcomh deselect level ~ 0.77 Vcc
-    SSD1306_Write(true, 0xA4); // Entire display ON, resume to RAM content display
-    SSD1306_Write(true, 0xA6); // Set Display in Normal Mode, 1 = ON, 0 = OFF
-    SSD1306_Write(true, 0x2E); // Deactivate scroll
-    SSD1306_Write(true, 0xAF); // Display ON in normal mode
+    SSH1106_Write(true, 0xAE); // Entire Display OFF
+    SSH1106_Write(true, 0xD5); // Set Display Clock Divide Ratio and Oscillator Frequency
+    SSH1106_Write(true, 0xF0); // Default Setting for Display Clock Divide Ratio and Oscillator Frequency that is recommended
+    SSH1106_Write(true, 0xA8); // Set Multiplex Ratio
+    SSH1106_Write(true, 0x3F); // 64 COM lines
+    SSH1106_Write(true, 0xD3); // Set display offset
+    SSH1106_Write(true, 0x3F); // 0 offset
+    SSH1106_Write(true, 0x40); // Set first line as the start line of the display
+    SSH1106_Write(true, 0x8D); // Charge pump
+    SSH1106_Write(true, 0x14); // Enable charge dump during display on
+    SSH1106_Write(true, 0x20); // Set memory addressing mode
+    SSH1106_Write(true, 0x00); // Horizontal addressing mode
+    SSH1106_Write(true, 0xA1); // Set segment remap with column address 127 mapped to segment 0
+    SSH1106_Write(true, 0xC8); // Set com output scan direction, scan from com63 to com 0
+    SSH1106_Write(true, 0xDA); // Set com pins hardware configuration
+    SSH1106_Write(true, 0x12); // Alternative com pin configuration, disable com left/right remap
+    SSH1106_Write(true, 0x81); // Set contrast control
+    SSH1106_Write(true, 0xAF); // Set Contrast to 128
+    SSH1106_Write(true, 0xD9); // Set pre-charge period
+    SSH1106_Write(true, 0xF1); // Phase 1 period of 15 DCLK, Phase 2 period of 1 DCLK
+    SSH1106_Write(true, 0xDB); // Set Vcomh deselect level
+    SSH1106_Write(true, 0x40); // Vcomh deselect level ~ 0.77 Vcc
+    SSH1106_Write(true, 0xA4); // Entire display ON, resume to RAM content display
+    SSH1106_Write(true, 0xA6); // Set Display in Normal Mode, 1 = ON, 0 = OFF
+    SSH1106_Write(true, 0x2E); // Deactivate scroll
+    SSH1106_Write(true, 0xAF); // Display ON in normal mode
 
     return 0;
 }
@@ -194,9 +194,9 @@ void updateScreen(void)
     for (i = 0; i < (_HEIGHT / 8); i++)
     {
    
-        SSD1306_Write(true, 0XB0 + i);
-        SSD1306_Write(true, 0X00);
-        SSD1306_Write(true, 0X10);
+        SSH1106_Write(true, 0XB0 + i);
+        SSH1106_Write(true, 0X00);
+        SSH1106_Write(true, 0X10);
 
         // WriteData(&display.buffer [_WIDTH * i], _WIDTH);
         WriteData(&display.buffer[_WIDTH * i], _WIDTH);
@@ -323,10 +323,10 @@ void drawBitmap(Objects_t *Obj, Color_t _color)
  int etx_oled_probe(struct i2c_client *client,
                           const struct i2c_device_id *id)
 {
-    SSD1306_DisplayInit();
+    SSH1106_DisplayInit();
     printk("%d", ds.min);
     //fill the OLED with this data
-    // SSD1306_Fill(0xFF);
+    // SSH1106_Fill(0xFF);
 
     clearScreen();
     setPosition(0, 0);
@@ -361,7 +361,7 @@ void drawBitmap(Objects_t *Obj, Color_t _color)
  int etx_oled_remove(struct i2c_client *client)
 {
     //fill the OLED with this data
-    // SSD1306_Fill(0x00);
+    // SSH1106_Fill(0x00);
     clearScreen();
     updateScreen();
 
@@ -394,7 +394,7 @@ MODULE_DEVICE_TABLE(i2c, etx_oled_id);
 ** I2C Board Info strucutre
 */
  struct i2c_board_info oled_i2c_board_info = {
-    I2C_BOARD_INFO(SLAVE_DEVICE_NAME, SSD1306_SLAVE_ADDR)};
+    I2C_BOARD_INFO(SLAVE_DEVICE_NAME, SSH1106_SLAVE_ADDR)};
 
 /*
 ** Module Init function
