@@ -335,7 +335,7 @@ void drawBitmap(Objects_t *Obj, Color_t _color)
     msleep(3000);
     clearScreen();
     setPosition(0, 0);
-    drawBitmap(&StaticPham, white);
+    drawBitmap(&Teacher, white);
     updateScreen();
     msleep(3000);
     clearScreen();
