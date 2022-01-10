@@ -2,7 +2,7 @@
  * ds1307.c
  *
  *  Created on: Aug 18, 2021
- *      Author: Quang Anh
+ *      Author: Nhom 5
  */
 
 #include <linux/module.h>
