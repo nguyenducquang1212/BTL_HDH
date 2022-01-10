@@ -45,7 +45,7 @@ DS1307_t ds;
 EXPORT_SYMBOL(ds);
 static void DS1307_getTime(DS1307_t *ds1307);
 
-int thread_function(void *pv)
+int thread_function(void *pv)   //
 {
     int i = 0;
 
