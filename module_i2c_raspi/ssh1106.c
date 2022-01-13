@@ -237,8 +237,8 @@ void drawPixel(uint8_t x, uint8_t y, Color_t color)
 
 char putChar(char _char, Objects_t *Font, Color_t color)
 {
-    uint8_t hor_cnt = 0; //Horizon current cursor
-    uint8_t ver_cnt = 0; //Vertical current cursor
+    uint8_t hor_cnt = 0; //Horizon current cursor  --
+    uint8_t ver_cnt = 0; //Vertical current cursor  |
     uint16_t temp_point = 0;
 
     if ((display.CurX + Font->oWidth) >= _WIDTH || (display.CurY + Font->oHeight) >= _HEIGHT)
